@@ -90,6 +90,9 @@ final class BeaconManager: NSObject {
         guard let monitoringRegion = monitoringRegion else { return }
 
         locationManager.startMonitoring(for: monitoringRegion)
+        after(.milliseconds(10)) { [weak self] in
+            self?.locationManager.requestState(for: monitoringRegion)
+        }
         isMonitoring = true
         print("start monitor")
     }

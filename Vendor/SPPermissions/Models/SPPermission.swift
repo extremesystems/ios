@@ -117,64 +117,9 @@ extension SPPermission {
      */
     fileprivate static func manager(for permission: SPPermission) -> SPPermissionProtocol {
         switch permission {
-            #if os(iOS)
-        case .camera:
-            #if SPPERMISSION_CAMERA
-            return SPCameraPermission()
-            #else
-            fatalError(error(permission))
-            #endif
-        case .photoLibrary:
-            #if SPPERMISSION_PHOTOLIBRARY
-            return SPPhotoLibraryPermission()
-            #else
-            fatalError(error(permission))
-            #endif
-        case .microphone:
-            #if SPPERMISSION_MICROPHONE
-            return SPMicrophonePermission()
-            #else
-            fatalError(error(permission))
-            #endif
-        case .calendar:
-            #if SPPERMISSION_CALENDAR
-            return SPCalendarPermission()
-            #else
-            fatalError(error(permission))
-            #endif
-        case .contacts:
-            #if SPPERMISSION_CONTACTS
-            return SPContactsPermission()
-            #else
-            fatalError(error(permission))
-            #endif
-        case .reminders:
-            #if SPPERMISSION_REMINDERS
-            return SPRemindersPermission()
-            #else
-            fatalError(error(permission))
-            #endif
-        case .speech:
-            #if SPPERMISSION_SPEECH
-            return SPSpeechPermission()
-            #else
-            fatalError(error(permission))
-            #endif
         case .locationAlwaysAndWhenInUse:
             #if SPPERMISSION_LOCATION
             return SPLocationPermission(type: SPLocationPermission.SPLocationType.AlwaysAndWhenInUse)
-            #else
-            fatalError(error(permission))
-            #endif
-        case .motion:
-            #if SPPERMISSION_MOTION
-            return SPMotionPermission()
-            #else
-            fatalError(error(permission))
-            #endif
-        case .mediaLibrary:
-            #if SPPERMISSION_MEDIALIBRARY
-            return SPMediaLibraryPermission()
             #else
             fatalError(error(permission))
             #endif
@@ -183,7 +128,6 @@ extension SPPermission {
             return SPBluetoothPermission()
             #else
             fatalError(error(permission))
-            #endif
             #endif
         case .notification:
             #if SPPERMISSION_NOTIFICATION
@@ -197,6 +141,8 @@ extension SPPermission {
             #else
             fatalError(error(permission))
             #endif
+        default:
+            return SPNotificationPermission()
         }
     }
     
