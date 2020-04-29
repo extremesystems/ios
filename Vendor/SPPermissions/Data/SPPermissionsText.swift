@@ -41,7 +41,7 @@ enum SPPermissionsText {
         case .speech:
             return "Speech"
         case .locationAlwaysAndWhenInUse:
-            return "Location Always"
+            return "Lokalizačné služby"
         case .motion:
             return "Motion"
         case .mediaLibrary:
@@ -50,7 +50,7 @@ enum SPPermissionsText {
             return "Bluetooth"
         #endif
         case .notification:
-            return "Notification"
+            return "Notifikácie"
         case .locationWhenInUse:
             return "Location When Use"
         }
@@ -74,16 +74,16 @@ enum SPPermissionsText {
         case .speech:
             return "Allow to check your voice"
         case .locationAlwaysAndWhenInUse:
-            return "Allow to access your location"
+            return ""
         case .motion:
             return "Allow to report motion and environment-related data"
         case .mediaLibrary:
             return "Allow to check your media"
         case .bluetooth:
-            return "Allow access to bluetooth"
+            return ""//"Allow access to bluetooth"
         #endif
         case .notification:
-            return "Get important information without opening app."
+            return "" //"Get important information without opening app."
         case .locationWhenInUse:
             return "Allow to access your location"
         }
@@ -94,6 +94,6 @@ enum SPPermissionsText {
     static var subtitleShortText: String = "Permissions request"
     static var commentText: String = "Permissions are necessary for the application to work and perform correctly. Push are not required permissions."
     
-    static var allow: String = "Allow"
-    static var allowed: String = "Allowed"
+    static var allow: String = "Povoliť"
+    static var allowed: String = "Povolené"
 }

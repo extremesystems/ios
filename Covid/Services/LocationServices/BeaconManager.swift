@@ -47,6 +47,11 @@ struct BeaconId {
     }
 }
 
+extension Notification.Name {
+    static let locationAuthorizationStatusHasChanged = Notification.Name(rawValue: "LocationStatusHasChanged")
+    static let bluetoothStatusHasChanged = Notification.Name(rawValue: "BluetoothStatusHasChanged")
+}
+
 final class BeaconManager: NSObject {
     static var shared = BeaconManager()
 
@@ -62,24 +67,33 @@ final class BeaconManager: NSObject {
     private var isMonitoring = false
     private var isAdvertising = false
 
+    var bluetoothIsOn: Bool {
+        peripheralManager.state == .poweredOn
+    }
+
     override private init() {
         super.init()
 
         locationManager.delegate = self
         activateLocationTrackingForBeacons()
+        configurePeripheralManager()
+    }
 
+    private func configurePeripheralManager() {
         peripheralManager = CBPeripheralManager(
             delegate: self,
             queue: nil,
-            options: [
-                CBPeripheralManagerOptionShowPowerAlertKey: true
-//                CBPeripheralManagerOptionRestoreIdentifierKey: "advertiserIdentifier"
-            ]
+            options: [ CBPeripheralManagerOptionShowPowerAlertKey: true ]
         )
     }
 
+    func restart() {
+        peripheralManager.stopAdvertising()
+        configurePeripheralManager()
+    }
+
     func activateLocationTrackingForBeacons() {
-        locationManager.requestAlwaysAuthorization()
+        Permissions.requestLocationAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         locationManager.allowsBackgroundLocationUpdates = true
     }
@@ -87,11 +101,15 @@ final class BeaconManager: NSObject {
     func startMonitoring() {
         guard !isMonitoring else { return }
         setupMonitoringRegion()
-        guard let monitoringRegion = monitoringRegion else { return }
+        guard let region = monitoringRegion else { return }
 
-        locationManager.startMonitoring(for: monitoringRegion)
+        startMonitor(for: region)
+    }
+
+    private func startMonitor(for region: CLBeaconRegion) {
+        locationManager.startMonitoring(for: region)
         after(.milliseconds(10)) { [weak self] in
-            self?.locationManager.requestState(for: monitoringRegion)
+            self?.locationManager.requestState(for: region)
         }
         isMonitoring = true
         print("start monitor")
@@ -124,9 +142,15 @@ extension BeaconManager {
     private func setupAdvertisingRegion(beacon: BeaconId) {
         let beaconID = "beacon-\(beacon.major)-\(beacon.minor)"
         if #available(iOS 13.0, *) {
-            myRegion = CLBeaconRegion(uuid: regionUUID, major: beacon.major, minor: beacon.minor, identifier: beaconID)
+            myRegion = CLBeaconRegion(uuid: regionUUID,
+                                      major: beacon.major,
+                                      minor: beacon.minor,
+                                      identifier: beaconID)
         } else {
-            myRegion = CLBeaconRegion(proximityUUID: regionUUID, major: beacon.major, minor: beacon.minor, identifier: beaconID)
+            myRegion = CLBeaconRegion(proximityUUID: regionUUID,
+                                      major: beacon.major,
+                                      minor: beacon.minor,
+                                      identifier: beaconID)
         }
     }
 }
@@ -137,6 +161,8 @@ extension BeaconManager: CBPeripheralManagerDelegate {
         if peripheral.state == .poweredOn, let beacon = advertisingBeacon {
             advertiseDevice(beacon: beacon)
         }
+
+        NotificationCenter.default.post(name: .bluetoothStatusHasChanged, object: nil)
     }
 
 //    func peripheralManager(_ peripheral: CBPeripheralManager, willRestoreState dict: [String : Any]) {
@@ -153,6 +179,11 @@ extension BeaconManager: CBPeripheralManagerDelegate {
 }
 
 extension BeaconManager: CLLocationManagerDelegate {
+
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        NotificationCenter.default.post(name: .locationAuthorizationStatusHasChanged, object: nil)
+    }
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         lastLocation = locations.last
     }

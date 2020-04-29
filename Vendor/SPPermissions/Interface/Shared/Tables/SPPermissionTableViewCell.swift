@@ -80,11 +80,12 @@ public class SPPermissionTableViewCell: UITableViewCell {
         button.centerYAnchor.constraint(equalTo: contentView.layoutMarginsGuide.centerYAnchor).isActive = true
         button.setContentHuggingPriority(UILayoutPriority(rawValue: 1000), for: .horizontal)
         button.setContentCompressionResistancePriority(UILayoutPriority(1000), for: .horizontal)
+        button.titleLabel?.font = UIFont(name: "Poppins-Regular", size: 15)
         
         contentView.addSubview(permissionTitleLabel)
         permissionTitleLabel.numberOfLines = 0
         permissionTitleLabel.textColor = SPPermissionsColor.label
-        permissionTitleLabel.font = UIFont.systemFont(ofSize: 19, weight: .semibold)
+        permissionTitleLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
         permissionTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         permissionTitleLabel.trailingAnchor.constraint(equalTo: button.leadingAnchor, constant: -15).isActive = true
         permissionTitleLabel.leadingAnchor.constraint(equalTo: iconContainerView.trailingAnchor, constant: 10).isActive = true
@@ -93,7 +94,7 @@ public class SPPermissionTableViewCell: UITableViewCell {
         contentView.addSubview(permissionDescriptionLabel)
         permissionDescriptionLabel.numberOfLines = 0
         permissionDescriptionLabel.textColor = SPPermissionsColor.secondaryLabel
-        permissionDescriptionLabel.font = UIFont.systemFont(ofSize: 15, weight: .regular)
+        permissionDescriptionLabel.font = UIFont(name: "Poppins-Regular", size: 17)
         permissionDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         permissionDescriptionLabel.topAnchor.constraint(equalTo: permissionTitleLabel.bottomAnchor, constant: 3).isActive = true
         permissionDescriptionLabel.trailingAnchor.constraint(equalTo: permissionTitleLabel.trailingAnchor).isActive = true

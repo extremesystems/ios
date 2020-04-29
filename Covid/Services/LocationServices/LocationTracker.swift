@@ -43,7 +43,7 @@ final class LocationTracker: NSObject {
     private let networkService = CovidService()
 
     var isLocationServiceEnabled: Bool {
-        CLLocationManager.authorizationStatus() != .denied
+        Permissions.isLocationAuthorized
     }
 
     override init() {
@@ -55,12 +55,16 @@ final class LocationTracker: NSObject {
     }
 
     func startLocationTracking() {
-        if CLLocationManager.authorizationStatus() == .authorizedAlways {
+        let authorizationStatus = CLLocationManager.authorizationStatus()
+        switch authorizationStatus {
+        case .authorizedAlways:
             manager.startUpdatingLocation(interval: timeInternal, acceptableLocationAccuracy: accuracy)
-        } else if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
+
+        case .authorizedWhenInUse:
             manager.requestAlwaysAuthorization()
             manager.startUpdatingLocation(interval: timeInternal, acceptableLocationAccuracy: accuracy)
-        } else if CLLocationManager.authorizationStatus() == .denied {
+
+        case .denied:
             let alertController = UIAlertController(title: "Nastavenia",
                                                     message: "Máte zakázané využívanie lokalizačných služieb. Pre správne fungovanie si zmeňte nastavenia",
                                                     preferredStyle: .alert)
@@ -73,7 +77,10 @@ final class LocationTracker: NSObject {
             alertController.addAction(cancelAction)
             alertController.addAction(settingsAction)
             UIApplication.shared.keyWindow?.rootViewController?.present(alertController, animated: true, completion: nil)
-        } else {
+
+        case .notDetermined, .restricted:
+            fallthrough
+        @unknown default:
             manager.requestAlwaysAuthorization()
         }
     }
