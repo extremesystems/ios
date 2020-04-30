@@ -150,8 +150,7 @@ public class SPPermissionTableViewCell: UITableViewCell {
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         iconImageView.leadingAnchor.constraint(equalTo: iconContainerView.leadingAnchor).isActive = true
         iconImageView.trailingAnchor.constraint(equalTo: iconContainerView.trailingAnchor).isActive = true
-        iconImageView.topAnchor.constraint(equalTo: iconContainerView.topAnchor).isActive = true
-        iconImageView.bottomAnchor.constraint(equalTo: iconContainerView.bottomAnchor).isActive = true
+        iconImageView.centerYAnchor.constraint(equalTo: iconContainerView.centerYAnchor).isActive = true
     }
     
     /**

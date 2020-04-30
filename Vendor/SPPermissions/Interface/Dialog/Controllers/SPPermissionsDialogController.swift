@@ -219,6 +219,13 @@ public class SPPermissionsDialogController: UIViewController, SPPermissionsContr
                         }
                     }
                 }
+                if self.permissions.contains(.locationAlwaysAndWhenInUse) {
+                    if let index = self.permissions.firstIndex(of: .locationAlwaysAndWhenInUse) {
+                        if let cell = self.dialogView.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? SPPermissionTableViewCell {
+                            cell.button.update()
+                        }
+                    }
+                }
             }
             
             /**
